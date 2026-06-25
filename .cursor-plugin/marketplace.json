@@ -1,0 +1,16 @@
+{
+  "name": "brightdome-development-standards-marketplace",
+  "owner": {
+    "name": "Brightdome"
+  },
+  "metadata": {
+    "description": "Brightdome development standards marketplace for Cursor"
+  },
+  "plugins": [
+    {
+      "name": "brightdome-development-standards",
+      "source": "development-standards",
+      "description": "Engineering skills, repository rules, and /bd-* slash commands for development workflows"
+    }
+  ]
+}

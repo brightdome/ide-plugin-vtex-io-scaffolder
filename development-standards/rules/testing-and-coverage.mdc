@@ -1,0 +1,68 @@
+---
+description: Enforce language-agnostic test and 95% coverage gates for all behavior-changing code
+alwaysApply: true
+---
+
+# Tests And Coverage Gate
+
+## Agent obligation (MANDATORY)
+
+**Cursor agents and automated assistants MUST follow this rule** for every behavior-changing change. **MUST NOT** mark work complete or recommend merge while skipping tests or coverage requirements below, except where **Allowed exceptions** explicitly permits skipping tests.
+
+**Repository specifics:** This rule defines company-wide policy. For this project's languages, commands, test/coverage invocation, logging entry points, and default task ID prefix, see [`project-runtime-conventions.mdc`](project-runtime-conventions.mdc) (create or update that file when bootstrapping the repo).
+
+## Core requirements (REQUIRED)
+
+For every code change in this repository, agents MUST:
+
+1. Run the project's automated test suite before finalizing work, or report inability to run and the exact command for maintainers.
+2. Enforce minimum coverage of **95%** for the repository's configured application scope when the project defines that gate.
+3. Include new or updated automated tests for any new feature, bug fix, or behavior change.
+4. MUST NOT treat behavior-changing code as ready to commit without tests, except per **Allowed exceptions**.
+
+## Required validation commands (REQUIRED)
+
+Before finalizing any change, agents MUST run the repository-defined commands for:
+
+- test execution
+- coverage reporting
+- coverage threshold enforcement (`>=95%`)
+
+Any command wrapper (for example task runner or make target) is acceptable only if it enforces the same coverage threshold.
+
+## Commit and CI gates (REQUIRED)
+
+- Agents MUST treat commits and pull requests as **not merge-ready** when tests fail.
+- Agents MUST treat commits and pull requests as **not merge-ready** when coverage is below **95%** for the configured scope.
+- CI MUST enforce the same or stricter checks as local validation; agents MUST not weaken CI expectations in proposals.
+- If local execution is not possible, agents MUST report the blocker and provide the exact verification command for CI or maintainers.
+
+## Feature-to-test policy (REQUIRED)
+
+- New or changed endpoints, services, business rules, data flows, and bug fixes MUST ship with automated tests.
+- Tests MUST validate both expected paths and meaningful failure or edge scenarios.
+- Tests MUST explicitly cover error handling and expected failure modes, not only successful outcomes.
+- If no test is added or updated for a behavior change, agents MUST treat the task as **incomplete** and not ready to commit.
+
+## Scenario documentation in tests (REQUIRED)
+
+Every automated test MUST state **in code** what is being exercised: the **scenario** (arrangement, inputs, or context), the **expected outcome** or assertion focus, and—when it is not obvious from the test name alone—**why** this case matters.
+
+- Agents MUST use the language’s normal comment form (for example `#` in Python, `//` or `/* */` in JavaScript/TypeScript, `--` in SQL) placed **immediately above** the test function, method, or case block, or as a short block at the start of the test body.
+- The comment MUST be **specific** enough that a reader does not need to reverse-engineer intent from assertions alone. Vague labels such as “happy path” or “edge case” without context are **not** sufficient.
+- Parameterized or table-driven tests: agents MUST document each row or case (inline comment, case name, or ID) so every variant’s scenario is explicit.
+- This requirement applies to **unit**, **integration**, and **end-to-end** tests unless the framework forces an equivalent description (for example `it('does X when Y', ...)`) that already satisfies scenario clarity—in that case, duplicate prose is optional but the scenario MUST still be unambiguous.
+
+## Allowed exceptions (strict)
+
+- Test creation MAY be skipped only for non-behavioral changes (for example comments, formatting-only edits, or documentation-only updates). Agents MUST state that exception in the task or assistant response.
+- Any other exception MUST be explicitly justified in the task/PR notes.
+- Coverage threshold exceptions require explicit maintainer approval documented in the task/PR notes; agents MUST NOT assume approval.
+
+## Pull request expectation (REQUIRED)
+
+Agents MUST ensure (or state in the assistant response when preparing a PR):
+
+- A short **Test evidence** note with executed test and coverage commands plus outcomes.
+- Coverage result evidence showing the threshold is met (`>=95%`) when the gate applies.
+- If tests cannot run locally, explicit report of the blocker, impact, and exact command needed to verify once fixed.

@@ -1,0 +1,59 @@
+﻿---
+description: Enforce centralized, language-agnostic logging and strict data safety
+alwaysApply: true
+---
+
+# Logging And Data Safety
+
+## Agent obligation (MANDATORY)
+
+**Cursor agents and automated assistants MUST follow this rule** for all code changes in any language. **MUST NOT** add or modify logging that bypasses the centralized layer, **MUST NOT** log secrets or unredacted sensitive data, and **MUST NOT** mark work complete until the **Task completion gate** is satisfied for the touched code paths.
+
+**Repository specifics:** This rule defines company-wide policy. For this project's languages, commands, test/coverage invocation, logging entry points, and default task ID prefix, see [`project-runtime-conventions.mdc`](project-runtime-conventions.mdc) (create or update that file when bootstrapping the repo).
+
+## Centralized logging architecture (REQUIRED)
+
+1. Agents MUST route all logs through a centralized logging layer (shared logger/adapter), not ad-hoc prints in production paths.
+2. The centralized layer MUST support structured fields and consistent severity levels (`DEBUG`, `INFO`, `WARN`, `ERROR`, `FATAL`).
+3. The centralized layer MUST route logs to configured sinks (console, file, log platform) and preserve correlation metadata.
+4. Every module, service, job, endpoint, and integration MUST use the same centralized strategy.
+5. If a centralized logging layer does not exist, agents MUST create it before adding or modifying business behavior that emits logs.
+
+## Mandatory coverage per code slice (REQUIRED)
+
+For every meaningful code slice (function, handler, workflow step, async job, external call) that agents add or change, agents MUST ensure logs include:
+
+1. Start/initiation event.
+2. Important milestone/progress events.
+3. Completion/success event (with duration when possible).
+4. Failure event with sanitized error context.
+
+Agents MUST use stable event names and include traceability fields such as `trace_id`, `request_id`, `job_id`, `entity_id`, and `duration_ms` when relevant.
+
+## Error logging rules (REQUIRED)
+
+- Agents MUST log all exceptions and handled failures with safe context and correlation ids.
+- Agents MUST NOT dump full exception/request/response objects blindly.
+- Agents MUST prefer explicit allowlisted fields over object serialization.
+- Agents MUST ensure retried operations log attempt count and final outcome.
+
+## Data safety policy (MUST NOT log)
+
+Agents MUST NOT log:
+
+- Secrets: passwords, API keys, tokens, private keys, credentials, connection strings.
+- Personal or regulated data: email, phone, name, address, document identifiers, payment data, health data.
+- Raw payloads that can contain sensitive fields.
+
+If context is required, agents MUST log masked/redacted forms only (for example `user_id_hash`, `token_last4`, `email_domain`).
+If uncertain whether data is sensitive, agents MUST treat it as sensitive and redact.
+
+## Task completion gate (REQUIRED)
+
+Agents MUST verify before finishing the task:
+
+- New or changed code slices include start, milestone, success, and failure logs as applicable.
+- Logging implementation uses only the centralized logging layer.
+- If no centralized logging layer exists yet, it was created as part of the task before business logging was added.
+- Log review confirms no secrets/PII are emitted in new or changed lines.
+- Changes MUST NOT be treated as complete until logging and data safety requirements are satisfied for the touched paths.
