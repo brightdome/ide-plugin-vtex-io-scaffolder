@@ -1,16 +1,16 @@
 {
-  "name": "brightdome-development-standards-marketplace",
+  "name": "brightdome-vtex-io-scaffolder-marketplace",
   "owner": {
     "name": "Brightdome"
   },
   "metadata": {
-    "description": "Brightdome development standards marketplace for Cursor"
+    "description": "Brightdome VTEX IO Scaffolder marketplace for Cursor"
   },
   "plugins": [
     {
-      "name": "brightdome-development-standards",
-      "source": "development-standards",
-      "description": "Engineering skills, repository rules, and /bd-* slash commands for development workflows"
+      "name": "brightdome-vtex-io-scaffolder",
+      "source": "vtex-io-scaffolder",
+      "description": "Scaffolds a complete VTEX IO Node service from the Brightdome boilerplate via a guided interview."
     }
   ]
 }

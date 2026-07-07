@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2018",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["node/*"],
+      "@types/*": ["node/types/*"]
+    },
+    "types": ["jest", "node"],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "isolatedModules": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node"
+  },
+  "include": ["node/**/*.ts", "node/**/*.tsx", "node/typings/*.d.ts"],
+  "exclude": ["node_modules", "coverage", "**/*.spec.ts", "**/*.test.ts"]
+}

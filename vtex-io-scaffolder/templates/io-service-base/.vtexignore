@@ -1,0 +1,11 @@
+node_modules/
+.editorconfig
+.eslintrc
+.gitignore
+README.md
+crowdin.yml
+node/middlewares/__tests__
+node/clients/__tests__
+node/utils/__tests__
+node/services/__tests__
+node/builders/__tests__

@@ -1,8 +1,14 @@
 # Brightdome Development Standards — Cursor Marketplace
 
 A single-plugin Cursor marketplace that distributes the Brightdome development
-standards plugin: engineering rules, skills, and the full `/bd-*` slash-command
-catalog for Git workflows, code quality, and documentation.
+standards plugin: a curated, **stack-agnostic** engineering skill library (TDD,
+DDD, debugging, architecture, code review, git workflows, grilling), one always-on
+data-safety rule, and the full `/bd-*` slash-command catalog.
+
+The skill library is synthesized from three MIT-licensed upstreams — Matt Pocock's
+`skills`, Every's `compound-engineering-plugin`, and Affaan Mustafa's `ECC` — with
+overlapping capabilities merged best-of-breed and aligned to Brightdome standards.
+See the plugin's [`NOTICE.md`](development-standards/NOTICE.md) for attributions.
 
 ## Layout
 
@@ -11,8 +17,9 @@ catalog for Git workflows, code quality, and documentation.
 development-standards/              # the installable plugin
   .cursor-plugin/plugin.json
   commands/                        # /bd-* slash commands
-  rules/                           # engineering .mdc rules
-  skills/                          # grill-with-docs, localize-company-cursor-rules
+  rules/                           # only logging-and-data-safety.mdc (always-on)
+  skills/                          # the engineering skill library
+  NOTICE.md                        # MIT attributions for the upstream sources
   README.md
 ```
 
@@ -36,5 +43,5 @@ git remote add origin git@github.com:<org>/cursor-plugin.development-standards.g
 git push -u origin main
 ```
 
-See the plugin's own [README](development-standards/README.md) for the rule and
-command catalog.
+See the plugin's own [README](development-standards/README.md) for the full skill,
+rule, and command catalog and the rule-vs-skill rationale.

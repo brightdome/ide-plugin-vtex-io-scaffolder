@@ -1,0 +1,69 @@
+{
+  "name": "{{APP_NAME}}",
+  "vendor": "{{APP_VENDOR}}",
+  "version": "{{APP_VERSION}}",
+  "title": "{{APP_TITLE}}",
+  "description": "{{APP_DESCRIPTION}}",
+  "categories": [],
+  "dependencies": {},
+  "builders": {
+    "node": "{{NODE_BUILDER_VERSION}}",
+    "docs": "{{DOCS_BUILDER_VERSION}}"
+  },
+  "scripts": {
+    "postreleasy": "vtex publish"
+  },
+  "credentialType": "absolute",
+  "policies": [
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "{{account}}.vtexcommercestable.com.br",
+        "path": "/api/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "portal.vtexcommercestable.com.br",
+        "path": "/api/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "{{account}}.myvtex.com",
+        "path": "/_v/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "{{account}}.myvtex.com",
+        "path": "/api/dataentities/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "api.vtex.com",
+        "path": "/api/dataentities/*"
+      }
+    },
+    {
+      "name": "colossus-fire-event"
+    },
+    {
+      "name": "colossus-write-logs"
+    },
+    {
+      "name": "ADMIN_DS"
+    }
+  ],
+  "settingsSchema": {
+    "title": "{{APP_TITLE}} Settings",
+    "type": "object",
+    "properties": {}
+  },
+  "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
+}

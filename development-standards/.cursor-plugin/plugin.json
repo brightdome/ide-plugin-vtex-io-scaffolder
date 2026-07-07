@@ -1,9 +1,0 @@
-{
-  "name": "brightdome-development-standards",
-  "description": "Development skills and rules for coding standards, delivery, and workflow hygiene.",
-  "version": "1.0.0",
-  "commands": "commands",
-  "author": {
-    "name": "Brightdome"
-  }
-}
