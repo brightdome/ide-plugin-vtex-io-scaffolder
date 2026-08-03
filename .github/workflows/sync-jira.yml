@@ -12,17 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ !contains(github.event.issue.labels.*.name, 'synced-to-jira') }}
     steps:
-      - name: Map GitHub label to a Jira issue type
-        id: map
-        env:
-          LABELS: ${{ join(github.event.issue.labels.*.name, ',') }}
-        run: |
-          case ",$LABELS," in
-            *,bug,*) echo "issuetype=Bug" >> "$GITHUB_OUTPUT" ;;
-            *,enhancement,*) echo "issuetype=Story" >> "$GITHUB_OUTPUT" ;;
-            *) echo "issuetype=Task" >> "$GITHUB_OUTPUT" ;;
-          esac
-
       - name: Create Jira issue
         id: jira
         env:
@@ -33,7 +22,7 @@ jobs:
           ISSUE_TITLE: ${{ github.event.issue.title }}
           ISSUE_BODY: ${{ github.event.issue.body }}
           ISSUE_URL: ${{ github.event.issue.html_url }}
-          ISSUE_TYPE: ${{ steps.map.outputs.issuetype }}
+          ISSUE_LABELS: ${{ join(github.event.issue.labels.*.name, ',') }}
         run: |
           set -euo pipefail
 
@@ -46,12 +35,17 @@ jobs:
 
           Reported via GitHub: ${ISSUE_URL}"
 
+          # The AIF ("AI Tools Feedback Cycle") project only has Task/Sub-task
+          # issue types, so bug/enhancement/question is carried over as a
+          # Jira label instead of an issue type.
+          LABELS_JSON=$(echo "$ISSUE_LABELS" | tr ',' '\n' | grep -v '^$' | jq -R . | jq -sc .)
+
           PAYLOAD=$(jq -n \
             --arg project "$JIRA_PROJECT_KEY" \
             --arg summary "$ISSUE_TITLE" \
             --arg body "$DESCRIPTION" \
-            --arg issuetype "$ISSUE_TYPE" \
-            '{fields: {project: {key: $project}, summary: $summary, issuetype: {name: $issuetype}, description: {type: "doc", version: 1, content: [{type: "paragraph", content: [{type: "text", text: $body}]}]}}}')
+            --argjson labels "$LABELS_JSON" \
+            '{fields: {project: {key: $project}, summary: $summary, issuetype: {name: "Task"}, labels: $labels, description: {type: "doc", version: 1, content: [{type: "paragraph", content: [{type: "text", text: $body}]}]}}}')
 
           RESPONSE=$(curl -sS -w '\n%{http_code}' -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
             -X POST "$JIRA_BASE_URL/rest/api/3/issue" \
